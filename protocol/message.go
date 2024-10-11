@@ -335,7 +335,7 @@ type RegisterBatteryLevel struct {
 }
 
 func (r *RegisterBatteryLevel) Decode(m *PhevMessage) {
-	if m.Register != BatteryLevelRegister || len(m.Data) != 4 {
+	if m.Register != BatteryLevelRegister || len(m.Data) != 4 || int(m.Data[0]) == 0 || int(m.Data[0]) == 255 {
 		return
 	}
 	r.Level = int(m.Data[0])
