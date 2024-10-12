@@ -443,10 +443,13 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 		m.publish("/lights/head", boolOnOff[reg.Headlights])
 	case *protocol.RegisterBatteryLevel:
 		if reg.Level <= 100 {
-			if (reg.Level == 0 || reg.Level == 5) && wrongBatteryLevelCount < 5 {
+			if (reg.Level == 0 || reg.Level == 5) {
 				wrongBatteryLevelCount++
 			} else {
 				wrongBatteryLevelCount = 0
+			}
+
+			if wrongBatteryLevelCount == 0 || wrongBatteryLevelCount > 5 {
 				m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
 			}
 		}
