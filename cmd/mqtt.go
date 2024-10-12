@@ -442,10 +442,12 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 		m.publish("/door/boot", boolOpen[reg.Boot])
 		m.publish("/lights/head", boolOnOff[reg.Headlights])
 	case *protocol.RegisterBatteryLevel:
-		if (lastBatteryLevel - reg.Level) < 50 && reg.Level != 255 {
-			m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
+		if reg.Level <= 100 {
+			if (lastBatteryLevel - reg.Level) < 50 {
+				m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
+			}
+			lastBatteryLevel = reg.Level
 		}
-		lastBatteryLevel = reg.Level
 		m.publish("/lights/parking", boolOnOff[reg.ParkingLights])
 	case *protocol.RegisterChargePlug:
 		if reg.Connected {
