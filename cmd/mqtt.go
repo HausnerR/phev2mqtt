@@ -441,7 +441,7 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 		m.publish("/lights/head", boolOnOff[reg.Headlights])
 	case *protocol.RegisterBatteryLevel:
 		//m.mqttData["/battery/level"]
-		log.Debugf(fmt.Printf("Battery bytes:\t %x \n", reg.raw))
+		log.Info("Battery bytes:\t %x \n", reg.raw)
 		if reg.Level != 255 {
 			m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
 		}
