@@ -338,6 +338,8 @@ func (r *RegisterBatteryLevel) Decode(m *PhevMessage) {
 	if m.Register != BatteryLevelRegister || len(m.Data) != 4 {
 		return
 	}
+	log.Info("Battery level:\t %d \n", int(m.Data[0]))
+	log.Info("Battery bytes:\t %x \n", m.Data)
 	r.Level = int(m.Data[0])
 	r.ParkingLights = m.Data[2] == 0x1
 	r.raw = m.Data

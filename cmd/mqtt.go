@@ -405,6 +405,8 @@ var boolOpen = map[bool]string{
 	true:  "open",
 }
 
+var lastBatteryLevel int = -1
+
 func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 	dataStr := hex.EncodeToString(msg.Data)
 	m.publish(fmt.Sprintf("/register/%02x", msg.Register), dataStr)
@@ -440,9 +442,8 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 		m.publish("/door/boot", boolOpen[reg.Boot])
 		m.publish("/lights/head", boolOnOff[reg.Headlights])
 	case *protocol.RegisterBatteryLevel:
-		//m.mqttData["/battery/level"]
-		log.Info("Battery bytes:\t %x \n", reg.raw)
-		if reg.Level != 255 {
+		if (lastBatteryLevel - reg.Level) < 90 && reg.Level != 255 {
+			lastBatteryLevel = reg.Level
 			m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
 		}
 		m.publish("/lights/parking", boolOnOff[reg.ParkingLights])
