@@ -465,14 +465,14 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 
 // Publish home assistant discovery message.
 // Uses the vehicle VIN, so sent after VIN discovery.
-var publishedDiscovery = false
 
 func (m *mqttClient) publishHomeAssistantDiscovery(vin, topic, name string) {
+	log.Info("Publishing HA Discovery")
 
-	if publishedDiscovery || !m.haDiscovery {
+	if !m.haDiscovery {
 		return
 	}
-	publishedDiscovery = true
+
 	discoveryData := map[string]string{
 		// Doors.
 		"%s/binary_sensor/%s_door_locked/config": `{
