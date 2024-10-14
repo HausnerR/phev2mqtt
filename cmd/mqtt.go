@@ -451,7 +451,7 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 				wrongBatteryLevelCount = 0
 			}
 
-			if wrongBatteryLevelCount == 0 || wrongBatteryLevelCount > 10 {
+			if wrongBatteryLevelCount == 0 || wrongBatteryLevelCount > 30 {
 				m.publish("/battery/level", fmt.Sprintf("%d", reg.Level))
 			}
 		}
