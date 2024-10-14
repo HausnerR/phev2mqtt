@@ -360,8 +360,6 @@ func (m *mqttClient) handlePhev(cmd *cobra.Command) error {
 	for {
 		select {
 		case <-updaterTicker.C:
-			log.Info("Invalidating cache and requesting data")
-			m.mqttData = map[string]string{}
 			m.phev.SetRegister(0x6, []byte{0x3})
 		case msg, ok := <-m.phev.Recv:
 			if !ok {
