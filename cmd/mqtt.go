@@ -360,7 +360,9 @@ func (m *mqttClient) handlePhev(cmd *cobra.Command) error {
 	for {
 		select {
 		case <-updaterTicker.C:
-			m.phev.SetRegister(0x6, []byte{0x3})
+			//m.phev.SetRegister(0x6, []byte{0x3})
+			m.phev.Close()
+			updaterTicker.Stop()
 		case msg, ok := <-m.phev.Recv:
 			if !ok {
 				log.Infof("Connection closed.")
