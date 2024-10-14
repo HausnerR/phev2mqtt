@@ -360,6 +360,8 @@ func (m *mqttClient) handlePhev(cmd *cobra.Command) error {
 	for {
 		select {
 		case <-updaterTicker.C:
+			log.Info("Invalidating cache and requesting data")
+			m.mqttData = map[string]string{}
 			m.phev.SetRegister(0x6, []byte{0x3})
 		case msg, ok := <-m.phev.Recv:
 			if !ok {
@@ -467,11 +469,11 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 // Uses the vehicle VIN, so sent after VIN discovery.
 
 func (m *mqttClient) publishHomeAssistantDiscovery(vin, topic, name string) {
-	log.Info("Publishing HA Discovery")
-
 	if !m.haDiscovery {
 		return
 	}
+
+	log.Info("Publishing HA Discovery")
 
 	discoveryData := map[string]string{
 		// Doors.
@@ -798,7 +800,7 @@ func init() {
 	mqttCmd.Flags().String("mqtt_topic_prefix", "phev", "Prefix for MQTT topics")
 	mqttCmd.Flags().Bool("ha_discovery", true, "Enable Home Assistant MQTT discovery")
 	mqttCmd.Flags().String("ha_discovery_prefix", "homeassistant", "Prefix for Home Assistant MQTT discovery")
-	mqttCmd.Flags().Duration("update_interval", 5*time.Minute, "How often to request force updates")
+	mqttCmd.Flags().Duration("update_interval", 3*time.Minute, "How often to request force updates")
 	mqttCmd.Flags().Duration("wifi_restart_time", 0, "Attempt to restart Wifi if no connection for this long")
 	mqttCmd.Flags().Duration("wifi_restart_retry_time", 2*time.Minute, "Interval to attempt Wifi restart")
 	mqttCmd.Flags().String("wifi_restart_command", defaultWifiRestartCmd, "Command to restart Wifi connection to Phev")
