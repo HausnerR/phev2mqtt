@@ -364,7 +364,7 @@ func (m *mqttClient) handlePhev(cmd *cobra.Command) error {
 			m.phev.Close()
 			updaterTicker.Stop()
 			m.mqttData = map[string]string{}
-			return fmt.Infof("Force reconnection for update")
+			return fmt.Errorf("Force reconnection for update")
 		case msg, ok := <-m.phev.Recv:
 			if !ok {
 				log.Infof("Connection closed.")
