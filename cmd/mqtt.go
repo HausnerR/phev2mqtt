@@ -477,8 +477,6 @@ func (m *mqttClient) publishHomeAssistantDiscovery(vin, topic, name string) {
 		return
 	}
 	publishedDiscovery = true
-
-
 	discoveryData := map[string]string{
 		// Doors.
 		"%s/binary_sensor/%s_door_locked/config": `{
