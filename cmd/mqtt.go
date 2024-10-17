@@ -364,7 +364,7 @@ func (m *mqttClient) handlePhev(cmd *cobra.Command) error {
 			m.phev.Close()
 			updaterTicker.Stop()
 			m.mqttData = map[string]string{}
-			return fmt.Errorf("Force reconnection for update")
+			return fmt.Errorf("Forcing update by reconnection...")
 		case msg, ok := <-m.phev.Recv:
 			if !ok {
 				log.Infof("Connection closed.")
@@ -469,13 +469,15 @@ func (m *mqttClient) publishRegister(msg *protocol.PhevMessage) {
 
 // Publish home assistant discovery message.
 // Uses the vehicle VIN, so sent after VIN discovery.
+var publishedDiscovery = false
 
 func (m *mqttClient) publishHomeAssistantDiscovery(vin, topic, name string) {
-	if !m.haDiscovery {
+
+	if publishedDiscovery || !m.haDiscovery {
 		return
 	}
+	publishedDiscovery = true
 
-	log.Info("Publishing HA Discovery")
 
 	discoveryData := map[string]string{
 		// Doors.
